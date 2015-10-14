@@ -5,9 +5,10 @@ module Impala
     LOG_CONTEXT_ID = "impala-ruby"
 
     # Don't instantiate Connections directly; instead, use {Impala.connect}.
-    def initialize(host, port)
+    def initialize(host, port, timeout=5000)
       @host = host
       @port = port
+      @timeout = timeout
       @connected = false
       open
     end
@@ -20,7 +21,7 @@ module Impala
     def open
       return if @connected
 
-      socket = Thrift::Socket.new(@host, @port)
+      socket = Thrift::Socket.new(@host, @port, @timeout)
 
       @transport = Thrift::BufferedTransport.new(socket)
       @transport.open
